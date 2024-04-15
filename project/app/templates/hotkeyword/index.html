@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>키워드 점수</title>
-</head>
-<body>
-    <h1>키워드 점수 보기</h1>
-    <table border="1">
-        <thead>
+
+{% extends 'base.html' %}
+
+{% block title %}키워드 점수 보기{% endblock %}
+
+{% block content %}
+    <h1 class="mt-5">키워드 점수 보기</h1>
+    <table class="table table-striped">
+        <thead class="table-dark">
             <tr>
                 <th>프로그래밍 언어</th>
                 <th>점수</th>
@@ -26,5 +25,4 @@
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+{% endblock %}
