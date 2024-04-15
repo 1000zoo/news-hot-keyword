@@ -16,7 +16,11 @@
         <tbody>
             {% for keyword, score in hotkeywords.items %}
             <tr>
-                <td>{{ keyword }}</td>
+                <td>
+                    <a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={{ keyword }}">
+                        {{ keyword }}
+                    </a>
+                </td>
                 <td>{{ score }}</td>
             </tr>
             {% endfor %}
