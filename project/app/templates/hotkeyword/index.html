@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+
+{% block title %}키워드 점수 보기{% endblock %}
+
+{% block content %}
+<div class="vh-100 d-flex justify-content-center align-items-center">
+    <div class="text-center">
+        <h1 class="mb-4">실시간 키워드</h1>
+        <ul class="list-group mb-4">
+            {% for keyword, score in hotkeywords.items %}
+                <li class="list-group-item">
+                    <a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={{ keyword }}"
+                       class="text-decoration-none">{{ keyword }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <button onclick="" class="btn btn-primary">세부사항 보기</button>
+    </div>
+</div>
+{% endblock %}
