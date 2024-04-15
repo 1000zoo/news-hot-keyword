@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+
+{% block title %}키워드 점수 보기{% endblock %}
+
+{% block content %}
+    <h1 class="mt-5">키워드 점수 보기</h1>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>프로그래밍 언어</th>
+                <th>점수</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for keyword, score in hotkeywords.items %}
+            <tr>
+                <td>
+                    <a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={{ keyword }}">
+                        {{ keyword }}
+                    </a>
+                </td>
+                <td>{{ score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
