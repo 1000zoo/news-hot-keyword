@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
 
+from app.models import Hotkeywords
+
 import os
 
 #데이터 분석
@@ -82,5 +84,12 @@ class CrawlingRouter(APIView):
 
             #형태소 분석 -> 결과 이미지 저장 경로(해야할 일: 메인 서버 DB로 경로 바꾸기)   
             counter_data = self.WordParsing(news_data)
+
+            for i in range(10):
+                hotkeyword = Hotkeywords.objects.create(
+                    keyword_text = counter_data[i][0],
+                    count = counter_data[i][1]
+                )
+                hotkeyword.save()
 
             return Response({'counter_data':counter_data})
