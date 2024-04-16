@@ -6,6 +6,9 @@ from datetime import timedelta
 
 from .models import Hotkeywords, Dailykeywords
 
+def home(request): #변경
+    return render(request, 'home.html')
+
 ## views
 def index(request):
     # response = requests.post("http://127.0.0.1:8000/api/crawling/")
