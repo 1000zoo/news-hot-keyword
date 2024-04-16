@@ -12,6 +12,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
 
 from app.models import Hotkeywords
+from app.models import Dailykeywords
+from django.db.models import F
+from datetime import datetime
 
 import os
 
@@ -46,18 +49,18 @@ class CrawlingRouter(APIView):
         result = counter.most_common(10) #상위 10개 데이터
         
         return result
-        
+
+
             
     #크롤링(데이터 가져오기)
     def post(self, request):
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 백그라운드에서 실행
-        #options=chrome_options
+        
+        Hotkeywords.objects.all().delete() # 원래 데이터 삭제
         
         #크롬 실행
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options)
-        with webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options) as driver:
-            
+        with webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) as driver:   
             #언론사 뉴스 홈-> 경향신문(첫번째)
             driver.get("https://news.naver.com/main/officeList.naver")
             button = driver.find_element(By.XPATH, '//*[@id="groupOfficeList"]/table/tbody/tr[1]/td/ul/li[1]/a')
@@ -84,11 +87,31 @@ class CrawlingRouter(APIView):
             #형태소 분석 -> 결과 이미지 저장 경로(해야할 일: 메인 서버 DB로 경로 바꾸기)   
             counter_data = self.WordParsing(news_data)
 
+
+            #DB에 저장
             for i in range(10):
-                hotkeyword = Hotkeywords.objects.create(
-                    keyword_text = counter_data[i][0],
-                    count = counter_data[i][1]
+                keyword_text = counter_data[i][0]
+                count = counter_data[i][1]
+
+                # 오늘 날짜를 가져옵니다.
+                today = datetime.now().date()
+                
+                # 오늘 날짜에 해당하는 Dailykeyword 레코드가 이미 존재하는지 확인합니다.
+                existing_record = Dailykeywords.objects.filter(keyword_text=keyword_text, keyword_date__date=today).first()
+                
+                if existing_record:
+                    # 이미 존재하는 레코드가 있다면 count를 업데이트 합니다.
+                    existing_record.count = F('count') + count
+                    existing_record.save()
+                else:
+                    # 존재하지 않는다면 새로운 레코드를 생성합니다.
+                    Dailykeywords.objects.create(
+                        keyword_text=keyword_text,
+                        count=count
+                    )
+                Hotkeywords.objects.create(
+                    keyword_text=keyword_text,
+                    count=count
                 )
-                hotkeyword.save()
 
             return Response({'counter_data':counter_data})
