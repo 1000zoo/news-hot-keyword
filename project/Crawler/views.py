@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
 
 from app.models import Hotkeywords
-from app.models import Dailykeyword
+from app.models import Dailykeywords
 from django.db.models import F
 from datetime import datetime
 
@@ -98,7 +98,7 @@ class CrawlingRouter(APIView):
                 today = datetime.now().date()
                 
                 # 오늘 날짜에 해당하는 Dailykeyword 레코드가 이미 존재하는지 확인합니다.
-                existing_record = Dailykeyword.objects.filter(keyword_text=keyword_text, keyword_date__date=today).first()
+                existing_record = Dailykeywords.objects.filter(keyword_text=keyword_text, keyword_date__date=today).first()
                 
                 if existing_record:
                     # 이미 존재하는 레코드가 있다면 count를 업데이트 합니다.
@@ -106,7 +106,7 @@ class CrawlingRouter(APIView):
                     existing_record.save()
                 else:
                     # 존재하지 않는다면 새로운 레코드를 생성합니다.
-                    Dailykeyword.objects.create(
+                    Dailykeywords.objects.create(
                         keyword_text=keyword_text,
                         count=count
                     )

@@ -3,4 +3,4 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Hotkeywords)
-admin.site.register(Dailykeyword)
+admin.site.register(Dailykeywords)
