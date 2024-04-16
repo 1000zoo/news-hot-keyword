@@ -55,15 +55,13 @@ class CrawlingRouter(APIView):
             
     #크롤링(데이터 가져오기)
     def post(self, request):
-        #chrome_options = Options()
-        #chrome_options.add_argument('--headless')  # 백그라운드에서 실행
-        #options=chrome_options
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')  # 백그라운드에서 실행
         
         Hotkeywords.objects.all().delete() # 원래 데이터 삭제
         
         #크롬 실행
-        with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
-            
+        with webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) as driver:            
             #언론사 뉴스 홈-> 경향신문(첫번째)
             driver.get("https://news.naver.com/main/officeList.naver")
             button = driver.find_element(By.XPATH, '//*[@id="groupOfficeList"]/table/tbody/tr[1]/td/ul/li[1]/a')
