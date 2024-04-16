@@ -1,14 +1,14 @@
 
 {% extends 'base.html' %}
 
-{% block title %}실시간 키워드{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="vh-100 d-flex justify-content-center align-items-center">
     <div class="text-center">
         <div class="row">
             <div class="col mx-5">
-                <h1 class="mb-4 text-center">실시간 키워드</h1>
+                <h1 class="mb-4 text-center">{{ title }}</h1>
                 <ul class="list-group mb-4">
                     {% for keyword, score in hotkeywords.items %}
                         <li class="list-group-item">
@@ -17,25 +17,10 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <form action="{% url 'hotkeywords:chart' 0 %}" method="post">
+                <form action="{% url 'hotkeywords:chart' id %}" method="post">
                     {% csrf_token %}
-                    <button type="chart" class="btn btn-primary">실시간 키워드 자세히 보기</button>
+                    <button type="chart" class="btn btn-primary">{{ title }} 자세히 보기</button>
                 </form>
-            </div>
-            <div class="col mx-5">
-                <h1 class="mb-4 text-center">오늘의 키워드</h1>
-                    <ul class="list-group mb-4">
-                        {% for keyword, score in todaykeywords.items %}
-                            <li class="list-group-item">
-                                <a href="https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={{ keyword }}"
-                                class="text-decoration-none">{{ keyword }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <form action="{% url 'hotkeywords:chart' 1 %}" method="post">
-                        {% csrf_token %}
-                        <button type="chart" class="btn btn-primary">오늘의 키워드 자세히 보기</button>
-                    </form>
             </div>
         </div>
     </div>
