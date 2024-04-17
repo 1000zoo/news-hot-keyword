@@ -70,6 +70,9 @@ class CrawlingRouter(APIView):
         news_data = []
         headers = {"User-Agent": user_agent}
 
+        # Hotkeywords는 post를 요청할 때마다 delete
+        Hotkeywords.objects.all().delete()
+
         with requests.Session() as session:
 
             session.headers.update(headers)
