@@ -119,10 +119,13 @@ class CrawlingRouter(APIView):
                     keyword_text=keyword_text,
                     count=count
                 )
-            
+
 
             #assets 폴더를 추가해서 글꼴 넣음
-            font_path = str(settings.BASE_DIR / 'assets' / 'malgun.ttf')
+            font_path = str(settings.BASE_DIR / 'assets' / 'YeojuCeramic-TTF.ttf')
+            img_save_path = str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(today)}.png')
+            if os.path.exists(img_save_path):
+                os.remove(img_save_path)
 
             wordcloud_dict = {word: count for word, count in counter_data}
             wordcloud = WordCloud(font_path=font_path, width=800, height=400, background_color='white').generate_from_frequencies(wordcloud_dict)

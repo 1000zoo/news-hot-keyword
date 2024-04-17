@@ -31,6 +31,9 @@
             <div class="col-md-8" width="100" height="100">
                 <canvas id="pieChart"></canvas>
             </div>
+            <div class="col-md-8" width="100" height="100">
+                <img src="{{ wordcloud_path }}" alt="{{ wordcloud_path }}">
+            </div>
         </div>
         <div class="center-button">
             <button onclick="goBack()" class="btn btn-primary">뒤로가기</button>
@@ -93,7 +96,7 @@
         });
         var total = data.reduce((sum, value) => sum + value, 0)
         var percentageData = data.map(value => (value / total * 100));
-        console.log(percentageData)
+
         const ctxPie = document.getElementById('pieChart').getContext('2d');
         const pieChart = new Chart(ctxPie, {
             type: 'doughnut',

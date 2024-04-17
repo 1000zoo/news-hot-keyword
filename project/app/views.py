@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 import json
 import requests
@@ -22,13 +23,14 @@ def index(request, id):
     return render(request, 'hotkeyword/index.html', context=context)
 
 def chart(request, id):
+    img_path = get_image_path()
     if id == 0:
         keywords = get_dailykeywords()
         title = "오늘의 키워드"
     else:
         keywords = get_hotkeywrods()
         title = "실시간 키워드"
-    context = {"hotkeywords": json.dumps(load_data(keywords)), "title": title}
+    context = {"hotkeywords": json.dumps(load_data(keywords)), "title": title, "wordcloud_path": img_path}
     return render(request, 'hotkeyword/chart.html', context=context)
 
 ## utils
@@ -37,6 +39,9 @@ def get_dailykeywords():
 
 def get_hotkeywrods():
     return Hotkeywords.objects.all().order_by("-keyword_date")[:10]
+
+def get_image_path():
+    return str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(timezone.now().date())}.png')
 
 def load_data(keywords):
     results = {}
