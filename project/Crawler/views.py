@@ -39,7 +39,7 @@ class CrawlingRouter(APIView):
         for i in range(len(news_data)):
             #무의미한 문자 삭제
             data = news_data[i]
-            replace_list = ["‘","’","”","“",'"',"'","[포토]","[사설]","[CarTalk]","...","…","[단독]"]
+            replace_list = ["‘","’","”","“",'"',"'","[포토]","[사설]","[CarTalk]","...","…","[단독]",","]
             for j in replace_list:
                 data = data.replace(j, "")
             
