@@ -457,5 +457,4 @@ $RECYCLE.BIN/
 
 # png data
 wordcloud_pngs/
-
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,pycharm,python,django,windows
