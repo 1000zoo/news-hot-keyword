@@ -3,7 +3,6 @@ import json
 import requests
 from django.utils import timezone
 from datetime import timedelta
-
 from .models import Hotkeywords, Dailykeywords
 
 def home(request): #변경
@@ -34,7 +33,7 @@ def chart(request, id):
 
 ## utils
 def get_dailykeywords():
-    return Dailykeywords.objects.all().order_by("-count")[:10]
+    return Dailykeywords.objects.filter(keyword_date__date=timezone.now().date()).order_by("-count")[:10]
 
 def get_hotkeywrods():
     return Hotkeywords.objects.all().order_by("-keyword_date")[:10]

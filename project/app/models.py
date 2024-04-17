@@ -8,7 +8,7 @@ class Hotkeywords(models.Model):
     count = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.keyword_text
+        return f'text: {self.keyword_text}, date: {self.keyword_date}'
     
 
 class Dailykeywords(models.Model):
@@ -17,4 +17,4 @@ class Dailykeywords(models.Model):
     keyword_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.keyword_text
+        return f'text: {self.keyword_text}, date: {self.keyword_date}'
