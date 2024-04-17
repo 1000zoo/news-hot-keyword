@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 컨테이너의 너비를 설정하고 가운데 정렬 */
+        .container {
+            width: 40%;
+            margin: auto;
+        }
+        /* 버튼을 감싸는 div를 통해 버튼을 중앙 정렬 */
+        .center-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mt-4">{{ title }}</h2>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="col-md-8" width="100" height="100">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+        <div class="center-button">
+            <button onclick="goBack()" class="btn btn-primary">뒤로가기</button>
+        </div>
+    </div>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    <script>
+        const backgroundColor = [
+            'rgba(255, 99, 132, 0.2)', // Red
+            'rgba(54, 162, 235, 0.2)', // Blue
+            'rgba(255, 206, 86, 0.2)', // Yellow
+            'rgba(75, 192, 192, 0.2)', // Green
+            'rgba(153, 102, 255, 0.2)', // Purple
+            'rgba(255, 159, 64, 0.2)', // Orange
+            'rgba(79, 132, 240, 0.2)',
+            'rgba(210, 180, 222, 0.2)', // Lavender
+            'rgba(250, 128, 114, 0.2)', // Salmon
+            'rgba(255, 218, 185, 0.2)' // Peach
+        ]
+        const borderColor = [
+            'rgba(255, 99, 132, 1)', // Red
+            'rgba(54, 162, 235, 1)', // Blue
+            'rgba(255, 206, 86, 1)', // Yellow
+            'rgba(75, 192, 192, 1)', // Green
+            'rgba(153, 102, 255, 1)', // Purple
+            'rgba(255, 159, 64, 1)', // Orange
+            'rgba(79, 132, 240, 1)',
+            'rgba(210, 180, 222, 1)', // Lavender
+            'rgba(250, 128, 114, 1)', // Salmon
+            'rgba(255, 218, 185, 1)' // Peach
+        ]
+        var rawData = JSON.parse('{{ hotkeywords|safe }}');
+        var labels = Object.keys(rawData);
+        var data = Object.values(rawData);
+
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Usage',
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        var total = data.reduce((sum, value) => sum + value, 0)
+        var percentageData = data.map(value => (value / total * 100));
+        console.log(percentageData)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const pieChart = new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '퍼센트',
+                    data: percentageData,
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
+                    borderWidth: 1
+                }]                
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        // position: 'bottom',
+                        display: false,
+                    },
+                    datalabels: {
+                        color: '#000000',
+                        textAlign: 'center',
+                        font: {
+                            size: 11 // Adjust font size as needed
+                        },
+                        formatter: (value, context) => {
+                            return context.chart.data.labels[context.dataIndex] + '\n (' + value.toFixed(2) + '%)';
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        })
+    </script>
+</body>
+</html>
