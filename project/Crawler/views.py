@@ -26,6 +26,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 import io
 
+
 class CrawlingRouter(APIView):
     def get(self, request):
         return Response({'success':True})
@@ -58,7 +59,8 @@ class CrawlingRouter(APIView):
             
     #크롤링(데이터 가져오기)
     def post(self, request):
-        
+
+        Wordclouds.objects.all().delete() 
         Hotkeywords.objects.all().delete() #예전 레코드 삭제
 
         user_agent = getattr(settings, 'USER_AGENT', None)
@@ -117,9 +119,13 @@ class CrawlingRouter(APIView):
                     keyword_text=keyword_text,
                     count=count
                 )
+            
+
+            #assets 폴더를 추가해서 글꼴 넣음
+            font_path = str(settings.BASE_DIR / 'assets' / 'malgun.ttf')
 
             wordcloud_dict = {word: count for word, count in counter_data}
-            wordcloud = WordCloud(font_path="C:\Windows\Fonts\malgun.ttf", width=800, height=400, background_color='white').generate_from_frequencies(wordcloud_dict)
+            wordcloud = WordCloud(font_path=font_path, width=800, height=400, background_color='white').generate_from_frequencies(wordcloud_dict)
 
             # WordCloud 이미지를 파일로 저장하여 임시 파일에 저장
             buffer = io.BytesIO()
@@ -127,11 +133,11 @@ class CrawlingRouter(APIView):
             buffer.seek(0)
 
             # 임시 파일을 Django의 이미지 필드에 저장하기 위해 ContentFile 생성
-            image_name = 'wordcloud.png'
+            image_name = str(datetime.now().date()) + '.png'
             image_content = ContentFile(buffer.read(), name=image_name)
 
             # Wordscloud 모델의 wordcloud_img 필드에 직접 저장
             Wordclouds.objects.create(wordcloud_img=image_content)
 
+            # wordcloud_pngs 폴더에 사진 저장 확인할 수 있음
             return Response({'counter_data':counter_data})
-        
