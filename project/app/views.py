@@ -10,21 +10,26 @@ def home(request): #변경
     return render(request, 'home.html')
 
 ## views
-def index(request):
-    # response = requests.post("http://127.0.0.1:8000/api/crawling/")
-    hotkeywords = load_data(get_hotkeywrods())
-    dailykeywords = load_data(get_dailykeywords())
-    context = {"hotkeywords": hotkeywords, "todaykeywords": dailykeywords}
+def index(request, id):
+    if id == 0:
+        keywords = load_data(get_dailykeywords())
+        title = "오늘의 키워드"
+    else:
+        response = requests.post("http://127.0.0.1:8000/api/crawling/")
+        keywords = load_data(get_hotkeywrods())
+        title = "실시간 키워드"
+
+    context = {"hotkeywords": keywords, "title": title, "id": id}
     return render(request, 'hotkeyword/index.html', context=context)
 
 def chart(request, id):
     if id == 0:
-        keywords = get_hotkeywrods()
-        title = "실시간 키워드"
-    else:
         keywords = get_dailykeywords()
         title = "오늘의 키워드"
-    context = {"hotkeywords": json.dumps(load_data(keywords)), "chart_title": title}
+    else:
+        keywords = get_hotkeywrods()
+        title = "실시간 키워드"
+    context = {"hotkeywords": json.dumps(load_data(keywords)), "title": title}
     return render(request, 'hotkeyword/chart.html', context=context)
 
 ## utils
