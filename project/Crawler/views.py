@@ -7,6 +7,7 @@ from rest_framework.response import Response
 import requests
 from lxml import html
 
+from app.models import Wordclouds
 from app.models import Hotkeywords
 from app.models import Dailykeywords
 from django.db.models import F
@@ -17,6 +18,13 @@ import os
 #데이터 분석
 from collections import Counter
 from konlpy.tag import  Okt, Hannanum
+
+# WordCloud 필요한 라이브러리 불러오기
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+import io
 
 
 class CrawlingRouter(APIView):
@@ -51,6 +59,10 @@ class CrawlingRouter(APIView):
             
     #크롤링(데이터 가져오기)
     def post(self, request):
+
+        Wordclouds.objects.all().delete() 
+        Hotkeywords.objects.all().delete() #예전 레코드 삭제
+
         user_agent = getattr(settings, 'USER_AGENT', None)
         if not user_agent:
             raise ImproperlyConfigured("USER_AGENT must be set in Django settings")
@@ -64,6 +76,7 @@ class CrawlingRouter(APIView):
         Hotkeywords.objects.all().delete()
 
         with requests.Session() as session:
+
             session.headers.update(headers)
             for oid in oids:
                 full_url = f"{base_url}{oid}"
@@ -80,7 +93,6 @@ class CrawlingRouter(APIView):
 
             #형태소 분석
             counter_data = self.WordParsing(news_data)
-
 
             #DB에 저장
             for i in range(10):
@@ -108,4 +120,27 @@ class CrawlingRouter(APIView):
                     count=count
                 )
 
+
+            #assets 폴더를 추가해서 글꼴 넣음
+            font_path = str(settings.BASE_DIR / 'assets' / 'YeojuCeramic-TTF.ttf')
+            img_save_path = str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(today)}.png')
+            if os.path.exists(img_save_path):
+                os.remove(img_save_path)
+
+            wordcloud_dict = {word: count for word, count in counter_data}
+            wordcloud = WordCloud(font_path=font_path, width=800, height=400, background_color='white').generate_from_frequencies(wordcloud_dict)
+
+            # WordCloud 이미지를 파일로 저장하여 임시 파일에 저장
+            buffer = io.BytesIO()
+            wordcloud.to_image().save(buffer, format='PNG')
+            buffer.seek(0)
+
+            # 임시 파일을 Django의 이미지 필드에 저장하기 위해 ContentFile 생성
+            image_name = str(datetime.now().date()) + '.png'
+            image_content = ContentFile(buffer.read(), name=image_name)
+
+            # Wordscloud 모델의 wordcloud_img 필드에 직접 저장
+            Wordclouds.objects.create(wordcloud_img=image_content)
+
+            # wordcloud_pngs 폴더에 사진 저장 확인할 수 있음
             return Response({'counter_data':counter_data})
