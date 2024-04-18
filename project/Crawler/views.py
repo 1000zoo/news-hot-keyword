@@ -16,7 +16,7 @@ import os
 
 #데이터 분석
 from collections import Counter
-from konlpy.tag import Hannanum, Okt
+from konlpy.tag import  Okt, Hannanum
 
 
 class CrawlingRouter(APIView):
@@ -38,7 +38,7 @@ class CrawlingRouter(APIView):
             
             nouns = hannanum.nouns(data)
             nouns_list += nouns
-            # print(nouns_list)
+            
         nouns_list = [x for x in nouns_list if len(x)>1] #한 글자 삭제
         
 
@@ -78,7 +78,7 @@ class CrawlingRouter(APIView):
                         elements = tree.xpath(f'//*[@id="main_content"]/div[2]/ul[2]/li[{i}]/dl/dt[last()]/a')
                         news_data.extend([element.text.strip() for element in elements if element.text])
 
-            #형태소 분석 -> 결과 이미지 저장 경로(해야할 일: 메인 서버 DB로 경로 바꾸기)   
+            #형태소 분석
             counter_data = self.WordParsing(news_data)
 
 
