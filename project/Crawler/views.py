@@ -123,7 +123,7 @@ class CrawlingRouter(APIView):
 
             #assets 폴더를 추가해서 글꼴 넣음
             font_path = str(settings.BASE_DIR / 'assets' / 'YeojuCeramic-TTF.ttf')
-            img_save_path = str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(today)}.png')
+            img_save_path = os.path.join(settings.MEDIA_ROOT, 'wordcloud_pngs', f'{str(today)}.png')
             if os.path.exists(img_save_path):
                 os.remove(img_save_path)
 
