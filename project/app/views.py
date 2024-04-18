@@ -4,7 +4,9 @@ import json
 import requests
 from django.utils import timezone
 from datetime import timedelta
-from .models import Hotkeywords, Dailykeywords
+from .models import Hotkeywords, Dailykeywords, Wordclouds
+
+import os
 
 def home(request): #변경
     return render(request, 'home.html')
@@ -41,7 +43,8 @@ def get_hotkeywrods():
     return Hotkeywords.objects.all().order_by("-keyword_date")[:10]
 
 def get_image_path():
-    return str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(timezone.now().date())}.png')
+    wordcloud = Wordclouds.objects.filter(wordcloud_date__date=timezone.now().date()).first()
+    return os.path.join(settings.MEDIA_ROOT, wordcloud.wordcloud_img.url)
 
 def load_data(keywords):
     results = {}

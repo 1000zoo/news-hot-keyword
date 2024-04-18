@@ -21,7 +21,7 @@ class Dailykeywords(models.Model):
 
 class Wordclouds(models.Model):
     wordcloud_date = models.DateTimeField(auto_now_add=True)
-    wordcloud_img = models.ImageField(null=True, upload_to="wordcloud_pngs")
+    wordcloud_img = models.ImageField(null=True, upload_to="assets/wordcloud_pngs")
 
     def __str__(self):
         return f'date: {self.wordcloud_date}'
