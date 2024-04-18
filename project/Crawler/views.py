@@ -17,7 +17,7 @@ import os
 
 #데이터 분석
 from collections import Counter
-from konlpy.tag import  Okt, Hannanum
+from konlpy.tag import Hannanum, Okt
 
 # WordCloud 필요한 라이브러리 불러오기
 from wordcloud import WordCloud
@@ -46,7 +46,7 @@ class CrawlingRouter(APIView):
             
             nouns = hannanum.nouns(data)
             nouns_list += nouns
-            
+            # print(nouns_list)
         nouns_list = [x for x in nouns_list if len(x)>1] #한 글자 삭제
         
 
@@ -91,7 +91,7 @@ class CrawlingRouter(APIView):
                         elements = tree.xpath(f'//*[@id="main_content"]/div[2]/ul[2]/li[{i}]/dl/dt[last()]/a')
                         news_data.extend([element.text.strip() for element in elements if element.text])
 
-            #형태소 분석
+            #형태소 분석 -> 결과 이미지 저장 경로(해야할 일: 메인 서버 DB로 경로 바꾸기)   
             counter_data = self.WordParsing(news_data)
 
             #DB에 저장
@@ -123,7 +123,7 @@ class CrawlingRouter(APIView):
 
             #assets 폴더를 추가해서 글꼴 넣음
             font_path = str(settings.BASE_DIR / 'assets' / 'YeojuCeramic-TTF.ttf')
-            img_save_path = str(settings.BASE_DIR / 'wordcloud_pngs' / f'{str(today)}.png')
+            img_save_path = os.path.join(settings.MEDIA_ROOT, 'wordcloud_pngs', f'{str(today)}.png')
             if os.path.exists(img_save_path):
                 os.remove(img_save_path)
 
