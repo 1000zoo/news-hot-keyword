@@ -62,6 +62,7 @@
     
     실시간 키워드, 일일키워드 그리고 워드 클라우드를 데이터베이스에 저장하기 위한 Django 모델을 생성한다.
     
+
     1. **`Hotkeywords`** 모델은 크롤하고 분석한 실시간 키워드를 저장하기 위해 `keyword_text` 라는 CharField, 저장 날짜를 저장하기 위해 `keyword_date`라는 DateTimeField, 그리고 키워드의 언급 회수를 저장하기 위해 `count`라는 IntegerField로 구성되어 있다.
     2. **`Dailykeywords`** 모델은 하루 동안의 키워드를 저장하기 위해 `keyword_text` 라는 CharField, 저장 날짜를 저장하기 위해 `keyword_date`라는 DateTimeField, 그리고 키워드의 언급 회수를 저장하기 위해 `count`라는 IntegerField로 구성되어 있다.
     3. **`Wordclouds`** 모델은 실시간 키워드를 분석해서 나온 워드 클라우드 이미지 파일을 저장하기 위해 `wordcloud_img` 라는 ImageField, 저장 날짜를 저장하기 위해 `wordcloud_date`라는 DateTimeField로 구성되어 있다.
@@ -71,6 +72,7 @@
     
     전체적으로 Django의 기본 데이터베이스인 sqlite를 사용했다. DB 저장 시, 시간이 UTC 기준이었지만 필요한 시간 데이터는 한국 시간인 KST 였으므로 이를 변경하여 진행했다.
     
+
     1. 크롤링한 데이터를 데이터베이스에 저장하기 위해 **`post`**함수에서 `Hotkeywords`레코드를 생성하고 날짜를 기준으로 `Dailykeywords`에 중복되는 데이터는 그 데이터의 `count` 를 그만큼 증가시켰고, 중복되지 않는 데이터는 새롭게 `Dailykeywords`에 저장하도록 한다. `Hotkeywords` 레코드는 실시간 키워드와 직결되므로 데이터를 가져오기 전에 `delete()` 를 이용하여 비워준 뒤 크롤링을 진행하였다.
     2. 저장된 `Dailykeywords` 에서 `count`를 기준으로 오름차순 정렬하여 `objects.filter(*keyword_date__date*=timezone.now().date())` 를 이용해 오늘 날짜의 데이터만 가져와 데일리 키워드를 생성했다.
     3. 분석한 키워드로 생성한 워드클라우드를 임시파일에 저장하고 `ContentFile`을 생성하여 이미지 필드에 직접 저장한다.

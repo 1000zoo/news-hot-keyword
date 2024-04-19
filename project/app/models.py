@@ -18,3 +18,10 @@ class Dailykeywords(models.Model):
 
     def __str__(self):
         return f'text: {self.keyword_text}, date: {self.keyword_date}'
+
+class Wordclouds(models.Model):
+    wordcloud_date = models.DateTimeField(auto_now_add=True)
+    wordcloud_img = models.ImageField(null=True, upload_to="wordcloud_pngs")
+
+    def __str__(self):
+        return f'date: {self.wordcloud_date}'

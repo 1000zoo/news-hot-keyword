@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -13,17 +14,20 @@
   <body>
     <div class="vh-100 d-flex justify-content-center align-items-center">
       <div class="text-center">
-        <h1 style="margin-bottom: 50px">Hot KeyWord</h1>
+        <div style="margin-bottom: 50px">
+          <img src="{% static 'img/logo001.png' %}" alt="logo img" />
+        </div>
+        <br />
         <a
           href="hotkeyword/0"
-          class="btn btn-light"
+          class="btn btn-light btn-lg"
           style="text-decoration: none; color: black; margin-right: 100px"
           target="_blank"
           >오늘의 키워드</a
         >
         <a
           href="hotkeyword/1"
-          class="btn btn-light"
+          class="btn btn-light btn-lg"
           style="text-decoration: none; color: black"
           target="_blank"
           >실시간 키워드</a
